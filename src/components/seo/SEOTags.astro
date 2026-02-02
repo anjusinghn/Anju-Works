@@ -1,0 +1,94 @@
+---
+import { SEO } from "astro-seo";
+import presentation from "@/data/presentation";
+
+
+type Props = {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+  og?: {
+    title?: string;
+    type?: string;
+    description?: string;
+    image?: string;
+    alt?: string;
+  };
+  article?: {
+    publishedTime?: string;
+  };
+};
+
+const { title, description, noindex, og, article } = Astro.props;
+
+const SITE_NAME = "Kaizen";
+const DEFAULT_TITLE_PAGE = "Kaizen";
+const DEFAULT_DESCRIPTION_PAGE = presentation.description;
+const DEFAULT_IMAGE = "/og.png";
+const DEFAULT_IMAGE_ALT = `Hi, I'm Rishi, aka kaizen. ${presentation.description}`;
+
+const pageTitle = title || DEFAULT_TITLE_PAGE;
+const pageDescription = description || DEFAULT_DESCRIPTION_PAGE;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+const openGraph = {
+  title: og?.title || pageTitle,
+  type: og?.type || "website",
+  image: new URL(og?.image || DEFAULT_IMAGE, Astro.site).href,
+  alt: og?.alt || DEFAULT_IMAGE_ALT,
+  description: og?.description || pageDescription,
+};
+const hasDefaultImage = !og?.image;
+---
+
+<head>
+  <SEO
+    charset="UTF-8"
+    title={pageTitle}
+    description={pageDescription}
+    canonical={canonical}
+    noindex={noindex || false}
+    openGraph={{
+      basic: {
+        title: openGraph.title,
+        type: openGraph.type,
+        image: openGraph.image,
+        url: canonical,
+      },
+      optional: {
+        description: openGraph.description,
+        siteName: SITE_NAME,
+        locale: "en_US",
+      },
+      image: {
+        type: hasDefaultImage ? "image/png" : undefined,
+        width: hasDefaultImage ? 1200 : undefined,
+        height: hasDefaultImage ? 630 : null,
+        alt: openGraph.alt,
+      },
+      article: article && {
+        publishedTime: article.publishedTime,
+        authors: ["Rishi Vhavle"],
+      },
+    }}
+    twitter={{
+      card: "summary_large_image",
+      title: openGraph.title,
+      description: openGraph.description,
+      image: openGraph.image,
+      imageAlt: openGraph.alt,
+    }}
+    extend={{
+      link: [
+        { rel: "icon", href: "/favicon.svg" },
+        { rel: "sitemap", href: "/sitemap-index.xml" },
+      ],
+      meta: [
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "generator", content: Astro.generator },
+        { name: "author", content: "Rishi Vhavle" },
+        { name: "theme-color", content: "#000000" },
+      ],
+    }}
+  />
+</head>
