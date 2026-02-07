@@ -1,0 +1,166 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import SocialLinks from "@/components/SocialLinks.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import Link from "@/components/shared/Link.astro";
+import convertAsteriskToStrongTag from "@/utils/convertAsteriskToStrongTag";
+
+import GitHubContributions from "@/components/GitHubContributions.astro";
+import presentation from "@/data/presentation";
+import projects from "@/data/projects";
+import PostCard from "@/components/PostCard.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("posts", ({ data }) => data.isPublish && !data.isDraft))
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+  .slice(0, 3);
+---
+
+<Layout title="Kaizen | Homepage" og={{ title: "Rishi Vhavle, aka kaizen" }}>
+  <main class="flex flex-col gap-20">
+    <article class="flex flex-col gap-8 ">
+      <div class="flex items-start sm:items-center gap-2 sm:gap-4">
+        <img src="pfp.png" alt="pfp" class="h-12 w-12 sm:h-16 sm:w-16 rounded-full shadow-neon"/>
+        <h1 class="text-3xl ml-2 sm:text-4xl text-neutral-100 letter-spacing-2 tracking-wide font-bold font-lexend">
+          {presentation.title}
+          <p class="text-gray-800 ml-2tracking-wide font-ubuntu text-sm sm:text-lg">aka kaizen</p>
+        </h1>
+      </div>
+      {presentation.work && (
+      <h2 class="max-w-[60ch] leading-6 font-semibold text-xl font-ubuntu text-gray-600"
+        set:html={convertAsteriskToStrongTag(presentation.work)}
+      />
+    )}
+    <h2 
+      class="max-w-[60ch] leading-6 font-lexend text-lg"
+      set:html={convertAsteriskToStrongTag(presentation.description)}
+    />
+    <SocialLinks />
+    </article>
+
+    <!-- Case study -->
+    <article class="flex flex-col gap-4">
+      <h3 class="text-sm font-lexend tracking-widest text-neutral-600 uppercase">Case study</h3>
+      <a
+        href="/accelute"
+        class="group flex flex-col gap-4 rounded-md border border-neutral-600 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400 sm:flex-row sm:items-center"
+      >
+        <img
+          src="/accelute/img/01-hero.jpg"
+          alt="An Accelute lesson on the whiteboard"
+          class="w-full rounded border border-neutral-800 sm:w-56 shrink-0"
+          loading="lazy"
+        />
+        <div class="flex flex-col gap-1.5">
+          <p class="text-neutral-100 font-lexend text-lg leading-snug">How I built Accelute, an AI tutor that teaches like a teacher</p>
+          <p class="text-sm text-neutral-500">Verified diagrams, handwritten working and a natural voice, all in sync. What I built, how it works and what I learned.</p>
+          <p class="text-sm text-cyan-400 font-ubuntu mt-1">Read the case study &rarr;</p>
+        </div>
+      </a>
+    </article>
+
+    <!-- Open Source Contributions -->
+    <article class="flex flex-col gap-4">
+      <h3 class="text-sm font-lexend tracking-widest text-neutral-600 uppercase">Open Source Contributions</h3>
+      <div class="flex flex-row items-end gap-6 overflow-x-auto pb-1 scrollbar-none">
+        <a href="https://github.com/digitalocean-labs/mcp-digitalocean" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 flex-shrink-0 group">
+          <img src="/logos/digitalocean.svg" alt="DigitalOcean" class="h-6 w-6 object-contain opacity-50 group-hover:opacity-100 transition-opacity" />
+          <span class="text-[10px] text-neutral-600 group-hover:text-neutral-400 font-ubuntu transition-colors whitespace-nowrap">DigitalOcean</span>
+        </a>
+        <a href="https://github.com/projectdiscovery/nuclei" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 flex-shrink-0 group">
+          <img src="/logos/projectdiscovery.png" alt="ProjectDiscovery" class="h-6 w-6 object-contain opacity-50 group-hover:opacity-100 transition-opacity" />
+          <span class="text-[10px] text-neutral-600 group-hover:text-neutral-400 font-ubuntu transition-colors whitespace-nowrap">ProjectDiscovery</span>
+        </a>
+        <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 flex-shrink-0 group">
+          <img src="/logos/nousresearch.png" alt="NousResearch" class="h-6 w-6 object-contain opacity-50 group-hover:opacity-100 transition-opacity" />
+          <span class="text-[10px] text-neutral-600 group-hover:text-neutral-400 font-ubuntu transition-colors whitespace-nowrap">NousResearch</span>
+        </a>
+        <a href="https://github.com/requestly/requestly" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 flex-shrink-0 group">
+          <img src="/logos/requestly.png" alt="Requestly" class="h-6 w-6 object-contain opacity-50 group-hover:opacity-100 transition-opacity" />
+          <span class="text-[10px] text-neutral-600 group-hover:text-neutral-400 font-ubuntu transition-colors whitespace-nowrap">Requestly</span>
+        </a>
+        <a href="https://github.com/openclaw/openclaw" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 flex-shrink-0 group">
+          <img src="/logos/openclaw.png" alt="OpenClaw" class="h-6 w-6 object-contain opacity-50 group-hover:opacity-100 transition-opacity" />
+          <span class="text-[10px] text-neutral-600 group-hover:text-neutral-400 font-ubuntu transition-colors whitespace-nowrap">OpenClaw</span>
+        </a>
+        <a href="https://github.com/sst/opencode" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 flex-shrink-0 group">
+          <img src="/logos/opencode.png" alt="OpenCode" class="h-6 w-6 object-contain opacity-50 group-hover:opacity-100 transition-opacity" />
+          <span class="text-[10px] text-neutral-600 group-hover:text-neutral-400 font-ubuntu transition-colors whitespace-nowrap">OpenCode</span>
+        </a>
+        <a href="https://github.com/vercel/ai" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 flex-shrink-0 group">
+          <img src="/logos/vercel.svg" alt="Vercel AI" class="h-6 w-6 object-contain opacity-50 group-hover:opacity-100 transition-opacity" />
+          <span class="text-[10px] text-neutral-600 group-hover:text-neutral-400 font-ubuntu transition-colors whitespace-nowrap">Vercel AI</span>
+        </a>
+        <a href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 flex-shrink-0 group">
+          <img src="/logos/anthropic.svg" alt="Anthropic" class="h-6 w-6 object-contain opacity-50 group-hover:opacity-100 transition-opacity" />
+          <span class="text-[10px] text-neutral-600 group-hover:text-neutral-400 font-ubuntu transition-colors whitespace-nowrap">Anthropic</span>
+        </a>
+        <a href="https://github.com/kaizen403/models.dev" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center gap-2 flex-shrink-0 group">
+          <img src="/logos/modelsdev.svg" alt="models.dev" class="h-6 w-6 object-contain opacity-50 group-hover:opacity-100 transition-opacity" />
+          <span class="text-[10px] text-neutral-600 group-hover:text-neutral-400 font-ubuntu transition-colors whitespace-nowrap">models.dev</span>
+        </a>
+        <span class="flex flex-col items-center gap-2 flex-shrink-0">
+          <span class="text-neutral-700 text-lg leading-none pb-0.5">···</span>
+          <span class="text-[10px] text-neutral-700 font-ubuntu whitespace-nowrap">& more</span>
+        </span>
+      </div>
+    </article>
+
+    <article class="flex flex-col gap-7">
+      <header class="flex w-full flex-row justify-between gap-2">
+        <h3 class="text-xl tracking-wide font-lexend text-neutral-100">Latest on Blog</h3>
+      </header>
+      <section class="flex flex-col gap-4 md:flex-row md:flex-wrap">
+        {posts.map((post) => (
+          <PostCard
+            title={post.data.title}
+            description={post.data.description}
+            publishedAt={post.data.publishedAt}
+            slug={post.slug}
+          />
+        ))}
+      </section>
+    </article>
+
+    <article class="flex flex-col gap-7">
+      <header class="flex w-full flex-row justify-between gap-2">
+        <h3 class="text-xl tracking-wide font-lexend text-neutral-100">GitHub Activity</h3>
+        <a href="https://github.com/kaizen403" target="_blank" rel="noopener noreferrer" class="text-neutral-400 hover:text-neutral-100 text-sm font-ubuntu">@kaizen403</a>
+      </header>
+      <GitHubContributions username="kaizen403" />
+    </article>
+
+    <article class="flex flex-col gap-8">
+      <header class="flex w-full flex-row justify-between gap-2">
+        <h3 class="text-xl text-neutral-100 tracking-wide font-lexend">
+          Selected Projects ({projects.length})
+        </h3>
+      </header>
+      {projects.length === 0 && <p>Oops, I must work^^^^^</p>}
+
+      <section class="flex flex-col gap-4">
+        {
+          projects.length !== 0 &&
+            projects.map((project) => <ProjectCard {...project} />)
+        }
+      </section>
+    </article>
+
+    <article class="flex flex-col gap-5">
+      <header class="flex w-full flex-row justify-between">
+        <h3 class="text-lg font-lexend tracking-wide text-neutral-100">Get in touch</h3>
+      </header>
+      <p class="font-medium">
+         Email me at <Link
+          href={`mailto:${presentation.mail}`}
+          label={presentation.mail}
+        /> or follow me via my social links.
+      </p>
+
+      <SocialLinks />
+    </article>
+    
+  </main>
+
+</Layout>
+
