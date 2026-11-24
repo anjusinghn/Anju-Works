@@ -1,0 +1,266 @@
+"use client";
+
+import {
+  ArrowUpRight,
+  Contrast,
+  BookmarkCheckIcon,
+  FolderOpen,
+  HeartHandshake,
+  Home,
+  Layers,
+  Link,
+  MessageSquareQuote,
+  Monitor,
+  Moon,
+  Sun,
+} from "@/components/shared/site-icons";
+import { FaGithub } from "react-icons/fa6";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import { useMemo, useState } from "react";
+
+import { PortfolioSticker } from "@/components/shared/portfolio-sticker";
+import {
+  CommandPalette,
+  type CommandPaletteGroup,
+  type CommandPaletteItem,
+  type CommandPalettePage,
+} from "@/components/ui/command-palette";
+import { getEnabledComponents } from "@/config/components";
+import { bookshelfConfig } from "@/config/books";
+import { pagesConfig } from "@/config/pages";
+import projectFavicons from "@/config/project-favicons.generated.json";
+import { projectsConfig } from "@/config/projects";
+import { siteConfig } from "@/config/site";
+import type { Project } from "@/config/types";
+import { writingConfig } from "@/config/writing";
+import { playCopySound } from "@/lib/copy-sound";
+import { cn } from "@/lib/utils";
+
+const faviconByProject = new Map(
+  Object.entries(projectFavicons as Record<string, string>),
+);
+
+function ProjectIcon({
+  src,
+  tone,
+}: {
+  src?: string;
+  tone?: Project["faviconTone"];
+}) {
+  const [failed, setFailed] = useState(false);
+
+  if (!src || failed) {
+    return <FolderOpen aria-hidden className="size-4" />;
+  }
+
+  return (
+    <Image
+      src={src}
+      alt=""
+      width={16}
+      height={16}
+      className={cn(
+        "size-4 rounded-sm object-contain",
+        tone === "dark" && "dark:invert",
+        tone === "light" && "invert dark:invert-0",
+      )}
+      unoptimized
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
+/**
+ * The site-wide command palette, mounted once in the header. Every route is a
+ * couple of keystrokes away — top-level pages, each showcase component, each
+ * case study — plus theme controls and quick actions.
+ */
+export function SiteCommandPalette({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const router = useRouter();
+  const { setTheme } = useTheme();
+
+  const groups = useMemo<CommandPaletteGroup[]>(() => {
+    const go = (href: string) => () => router.push(href);
+
+    const componentItems: CommandPaletteItem[] = getEnabledComponents().map(
+      (component) => {
+        return {
+          id: `component-${component.id}`,
+          label: component.title,
+          icon: <PortfolioSticker name={component.icon} className="size-4" />,
+          keywords: ["component", "showcase", component.id],
+          onSelect: go(`/components/${component.id}`),
+        };
+      },
+    );
+
+    const projectItems: CommandPaletteItem[] = projectsConfig.map((project) => ({
+      id: `project-${project.id}`,
+      label: project.title,
+      icon: (
+        <ProjectIcon
+          src={faviconByProject.get(project.id)}
+          tone={project.faviconTone}
+        />
+      ),
+      keywords: ["project", "case study", project.category, project.id],
+      onSelect: go(`/project/${project.id}`),
+    }));
+
+    const writingItems: CommandPaletteItem[] = writingConfig.map((entry) => ({
+      id: `writing-${entry.slug}`,
+      label: entry.title,
+      icon: <ArrowUpRight className="size-4" />,
+      keywords: ["writing", "post", "blog", entry.kind, entry.slug],
+      onSelect: go(entry.href),
+    }));
+
+    const navigationItems: (CommandPaletteItem & { enabled: boolean })[] = [
+      {
+        id: "go-home",
+        label: "Home",
+        icon: <Home className="size-4" />,
+        keywords: ["landing", "start", "top"],
+        onSelect: go("/"),
+        enabled: true,
+      },
+      {
+        id: "go-work",
+        label: "Work",
+        icon: <FolderOpen className="size-4" />,
+        keywords: ["projects", "portfolio"],
+        onSelect: go("/#projects"),
+        enabled: siteConfig.sectionFlags.projects,
+      },
+      {
+        id: "go-components",
+        label: "All components",
+        icon: <Layers className="size-4" />,
+        keywords: ["registry", "catalog", "showcase"],
+        onSelect: go("/components"),
+        enabled: pagesConfig.components,
+      },
+      {
+        id: "go-testimonials",
+        label: "All testimonials",
+        icon: <MessageSquareQuote className="size-4" />,
+        keywords: ["community", "kind words", "feedback", "quotes"],
+        onSelect: go("/testimonials"),
+        enabled: pagesConfig.testimonials,
+      },
+      {
+        id: "go-bookshelf",
+        label: bookshelfConfig.title,
+        icon: <BookmarkCheckIcon className="size-4" />,
+        keywords: ["books", "reading", "library", "shelf"],
+        onSelect: go(bookshelfConfig.href),
+        enabled: siteConfig.sectionFlags.bookshelf,
+      },
+      {
+        id: "go-sponsor",
+        label: "Sponsor",
+        icon: <HeartHandshake className="size-4" />,
+        keywords: ["orbit", "seat", "support", "back the work", "donate"],
+        onSelect: go("/sponsor"),
+        enabled: pagesConfig.sponsor,
+      },
+    ];
+
+    return [
+      {
+        label: "Navigate",
+        items: navigationItems
+          .filter((item) => item.enabled)
+          .map(({ enabled: _enabled, ...item }) => item),
+      },
+      ...(componentItems.length > 0
+        ? [{ label: "Components", items: componentItems }]
+        : []),
+      { label: "Projects", items: projectItems },
+      { label: "Writing", items: writingItems },
+      {
+        label: "Actions",
+        items: [
+          {
+            id: "open-github",
+            label: "Open GitHub",
+            icon: <FaGithub className="size-4" />,
+            badge: "external",
+            keywords: ["repo", "source", "repository", "code", "stars"],
+            onSelect: () =>
+              window.open(siteConfig.banner.openSourceUrl, "_blank"),
+          },
+          {
+            id: "copy-url",
+            label: "Copy site URL",
+            icon: <Link className="size-4" />,
+            keywords: ["link", "share", "address", "copy"],
+            onSelect: () => {
+              navigator.clipboard
+                ?.writeText(siteConfig.meta.url)
+                .then(() => playCopySound())
+                .catch(() => {});
+            },
+          },
+          {
+            id: "change-theme",
+            label: "Change theme…",
+            icon: <Contrast className="size-4" />,
+            keywords: ["dark", "light", "system", "appearance", "mode"],
+            page: "theme",
+          },
+        ],
+      },
+    ];
+  }, [router]);
+
+  const pages = useMemo<CommandPalettePage[]>(
+    () => [
+      {
+        id: "theme",
+        label: "Theme",
+        placeholder: "Search themes…",
+        items: [
+          {
+            id: "theme-light",
+            label: "Light",
+            icon: <Sun className="size-4" />,
+            onSelect: () => setTheme("light"),
+          },
+          {
+            id: "theme-dark",
+            label: "Dark",
+            icon: <Moon className="size-4" />,
+            onSelect: () => setTheme("dark"),
+          },
+          {
+            id: "theme-system",
+            label: "System",
+            icon: <Monitor className="size-4" />,
+            onSelect: () => setTheme("system"),
+          },
+        ],
+      },
+    ],
+    [setTheme],
+  );
+
+  return (
+    <CommandPalette
+      groups={groups}
+      pages={pages}
+      open={open}
+      onOpenChange={onOpenChange}
+      recents
+      hotkey={false}
+    />
+  );
+}
