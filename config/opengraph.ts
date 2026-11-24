@@ -39,7 +39,7 @@ export const openGraphConfig = {
       footer: `${domain}/sponsor`,
     },
     project: {
-      eyebrow: "Project case study",
+      eyebrow: "Project",
     },
     post: {
       eyebrow: "Writing",

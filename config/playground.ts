@@ -554,10 +554,10 @@ const PLAYGROUNDS: Record<string, PlaygroundSchema> = {
         key: "defaultOpen",
         label: "Open",
         options: [
-          { value: "latest", label: "Latest year" },
-          { value: "all", label: "All years" },
+          { value: "first", label: "First category" },
+          { value: "all", label: "All categories" },
         ],
-        default: "latest",
+        default: "first",
       },
       {
         kind: "toggle",

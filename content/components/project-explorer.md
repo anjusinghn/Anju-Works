@@ -7,7 +7,6 @@ const projects = [
   {
     id: "zeno",
     title: "Zeno — AI Assistant for PostgreSQL",
-    year: 2025,
     status: "building",
     category: "ai-tool",
     href: "https://zeno.example.com",
@@ -16,7 +15,6 @@ const projects = [
   {
     id: "gridly",
     title: "Gridly — Modern UI Component Library",
-    year: 2025,
     status: "new",
     category: "design-system",
     href: "https://gridly.example.com",
@@ -29,7 +27,7 @@ export function PortfolioProjects() {
       <ProjectExplorer
         projects={projects}
         showHoverPreview={true}
-        defaultOpen="latest"
+        defaultOpen="first"
       />
     </div>
   );
@@ -38,9 +36,9 @@ export function PortfolioProjects() {
 
 ## Features & Anatomy
 
-The **Interactive Project Explorer** organizes work chronologically with paper-cut folders and newspaper-style image previews.
+The **Interactive Project Explorer** organizes work by category with paper-cut folders and newspaper-style image previews.
 
-- **Year folders with animated expansion.** Projects are categorized by year in collapsible folder groups with illustrated open and closed folders, halftone shading, and paper-cut year labels. Accent colors cycle between years, and hover movement respects reduced motion.
+- **Category folders with animated expansion.** Projects are organized by category in collapsible folder groups with illustrated open and closed folders, halftone shading, and paper-cut category labels. Hover movement respects reduced motion.
 - **Spring cursor image preview.** Hovering or focusing any project row triggers a newspaper-style clipping with irregular edges, a subtle print texture, and a serif caption. It follows the cursor using smooth Motion spring values (`stiffness: 260, damping: 26`) with edge-boundary detection.
 - **Configurable Hover Preview & Image Fallback.** Toggle cursor preview via `showHoverPreview`. When enabled on items without an image URL, a clean Lucide `ImageIcon` fallback placeholder is rendered automatically.
 - **Status Pills.** Highlights project release states such as `building...` (with animated radar ping indicator), `new`, and `shipped`.
@@ -54,7 +52,7 @@ The **Interactive Project Explorer** organizes work chronologically with paper-c
 | `projects` | `ProjectExplorerItem[]` | `sampleProjects` | Array of project items to display. |
 | `title` | `string` | `"Featured Projects"` | Section heading text. |
 | `showHeading` | `boolean` | `true` | Show or hide the top section heading rule and title. |
-| `defaultOpen` | `"all" \| "latest"` | `"all"` | Open all folders or only the most recent year. |
+| `defaultOpen` | `"all" \| "first"` | `"all"` | Open all folders or only the first category. |
 | `showHoverPreview` | `boolean` | `true` | Toggle floating cursor preview cards on row hover/focus. |
 | `linkIcon` | `ReactNode` | `ArrowUpRight` | Replace the arrow at the end of each row. |
 | `className` | `string` | `undefined` | Additional CSS classes for the root container. |
@@ -68,7 +66,6 @@ export interface ProjectExplorerItem {
   id: string;
   title: string;
   subtitle?: string; // falls back to the text after " — " in title
-  year: number;
   description?: string;
   category?: string;
   status?: ProjectStatus;

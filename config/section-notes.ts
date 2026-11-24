@@ -10,14 +10,6 @@ export const sectionNotes: Partial<Record<SectionId, SectionNoteConfig>> = {
     text: "A few things\nI've built",
     side: "left",
   },
-  accelute: {
-    text: "The one I'm\nproudest of",
-    side: "right",
-  },
-  writing: {
-    text: "Notes on\nhow it works",
-    side: "left",
-  },
   opensource: {
     text: "Find the\nsource code",
     side: "right",

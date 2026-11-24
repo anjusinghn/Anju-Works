@@ -18,9 +18,7 @@ export type SectionId =
   | "insights"
   | "sponsors"
   | "contact"
-  | "opensource"
-  | "writing"
-  | "accelute";
+  | "opensource";
 
 export interface SectionFlags {
   [key: string]: boolean;
@@ -245,15 +243,12 @@ export interface Project {
   tagline: string;
 
   description: string;
-  content?: string;
   /** Screenshot for the hover preview and project page. Omit to show a placeholder. */
   image?: string;
   imageAlt?: string;
   imageTone?: "light" | "dark";
   /** "github" marks a 2:1 repository card, shown whole instead of cropped. */
   imageSource?: "screenshot" | "github";
-  /** Internal long-form page. When set, the Work list links here instead of the live site. */
-  caseStudyHref?: string;
   /** Pinned on the previous portfolio. */
   featured?: boolean;
   faviconTone?: "light" | "dark";
@@ -261,7 +256,6 @@ export interface Project {
   githubUrl?: string;
   npmPackage?: string;
 
-  year: number;
   status: ProjectStatus;
   category: string;
 

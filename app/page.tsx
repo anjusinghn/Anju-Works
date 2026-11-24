@@ -1,5 +1,4 @@
 import { About } from "@/components/landing/about";
-import { Accelute } from "@/components/landing/accelute";
 import { Bookmarks } from "@/components/landing/bookmarks";
 import { Bookshelf } from "@/components/landing/bookshelf";
 import { Certifications } from "@/components/landing/certifications";
@@ -12,7 +11,6 @@ import { GitHubSection } from "@/components/landing/github-section";
 import { Hero } from "@/components/landing/hero";
 import { Insights } from "@/components/landing/insights";
 import { OpenSource } from "@/components/landing/open-source";
-import { Writing } from "@/components/landing/writing";
 import { ProfileBanner } from "@/components/landing/profile-banner";
 import { HowIWork } from "@/components/landing/how-i-work";
 import { HomeProjectExplorer } from "@/components/landing/home-project-explorer";
@@ -35,18 +33,13 @@ import type { ReactElement } from "react";
 import { Suspense } from "react";
 import type { ProjectExplorerItem } from "@/components/project-explorer";
 
-/* The explorer never reads case-study content, tags, or status, so those
-   fields stay on the server instead of crossing the client boundary. */
 const explorerProjects: ProjectExplorerItem[] = projectsConfig.map(
   (project) => ({
     id: project.id,
     title: project.title,
     subtitle: project.tagline,
-    year: project.year,
     description: project.description,
     category: project.category,
-    href: project.caseStudyHref,
-    liveUrl: project.caseStudyHref || project.content ? undefined : project.liveUrl,
     githubUrl: project.githubUrl,
     image: project.image,
     imageAlt: project.imageAlt,
@@ -66,7 +59,6 @@ const staticSections: Record<Exclude<SectionId, "github">, ReactElement> = {
     <HomeProjectExplorer
       projects={explorerProjects}
       title={projectsSectionConfig.title}
-      defaultOpen={projectsSectionConfig.defaultOpen}
       maxVisibleRows={projectsSectionConfig.maxVisibleRows}
       filterable
     />
@@ -82,8 +74,6 @@ const staticSections: Record<Exclude<SectionId, "github">, ReactElement> = {
   workflow: <HowIWork />,
   contact: <CTA />,
   opensource: <OpenSource />,
-  writing: <Writing />,
-  accelute: <Accelute />,
 };
 
 export default function Home() {

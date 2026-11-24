@@ -4,10 +4,7 @@ export const projectsSectionConfig = {
   title: "Work",
   liveButtonLabel: "Live site",
   sourceButtonLabel: "Source code",
-  caseStudyButtonLabel: "Read the case study",
-  /** Which year folders start expanded on the home page. */
-  defaultOpen: "latest" as "all" | "latest",
-  /** Rows shown in an open year before the rest scroll inside the folder. */
+  /** Rows shown in an open category before the rest scroll inside the folder. */
   maxVisibleRows: 7,
 };
 
@@ -26,7 +23,6 @@ export const projectsConfig: Project[] = [
       "AWS S3",
       "JWT"
     ],
-    "year": 2026,
     "order": 1,
     "featured": true,
     "status": "shipped",
@@ -34,8 +30,7 @@ export const projectsConfig: Project[] = [
     "category": "Developer tools",
     "image": "/images/projects/distributed-version-control.webp",
     "imageAlt": "Distributed Version Control repository preview",
-    "imageSource": "github",
-    "content": "### The challenge\n\nHow much of a version control system can you reconstruct from first principles? This project follows a file from local staging through a commit snapshot to a hosted repository.\n\n### How it works\n\nAn Express API and MongoDB handle accounts, repository metadata, and issues. AWS S3 stores the snapshots exchanged by push and pull. A separate React interface lets users browse repositories and inspect history.\n\n- Initialize a local repository and stage changes before committing.\n- Restore historical snapshots and synchronize them with remote storage.\n- Use JWT-authenticated routes for repository management.\n\n[GitHub frontend repository](https://github.com/anjusinghn/distributed-vcs-frontend)"
+    "imageSource": "github"
   },
   {
     "id": "github-intelligence",
@@ -51,7 +46,6 @@ export const projectsConfig: Project[] = [
       "A2A",
       "Ollama"
     ],
-    "year": 2026,
     "order": 2,
     "featured": true,
     "status": "shipped",
@@ -59,8 +53,7 @@ export const projectsConfig: Project[] = [
     "category": "Developer tools",
     "image": "/images/projects/github-intelligence.webp",
     "imageAlt": "Agentic GitHub Intelligence repository preview",
-    "imageSource": "github",
-    "content": "### The challenge\n\nFinding the context for an issue or a release often means moving between multiple GitHub views. This project explores bringing those reads and summaries into one assistant.\n\n### How it works\n\nLangGraph coordinates GitHub REST API calls and an Ollama model. An MCP server exposes tools, resources, and prompts for external agents, alongside an A2A integration and human approval for multi-step actions.\n\n- Summarize repository activity using GitHub data.\n- Triage issues and draft release notes.\n- Expose reusable tools for other agents."
+    "imageSource": "github"
   },
   {
     "id": "hr-assistant",
@@ -76,16 +69,14 @@ export const projectsConfig: Project[] = [
       "RAG",
       "Pydantic"
     ],
-    "year": 2026,
     "order": 3,
     "featured": true,
     "status": "shipped",
     "enabled": true,
-    "category": "AI",
+    "category": "Applied AI",
     "image": "/images/projects/hr-assistant.webp",
     "imageAlt": "AI HR Recruitment Assistant repository preview",
-    "imageSource": "github",
-    "content": "### The challenge\n\nHR questions span both unstructured policy documents and tasks with concrete inputs, such as checking whether a résumé meets a set of requirements.\n\n### How it works\n\nA LangChain agent retrieves passages from a local FAISS index and calls task-specific tools. Ollama runs the model locally, and Pydantic defines the fields returned by résumé extraction.\n\n- Search handbooks, leave policies, and job descriptions.\n- Extract candidate names, experience, and skills into a defined schema.\n- Calculate experience and check eligibility against required skills."
+    "imageSource": "github"
   },
   {
     "id": "customer-support-automation",
@@ -100,16 +91,14 @@ export const projectsConfig: Project[] = [
       "SQLite",
       "RAG"
     ],
-    "year": 2026,
     "order": 4,
     "featured": true,
     "status": "shipped",
     "enabled": true,
-    "category": "AI",
+    "category": "Applied AI",
     "image": "/images/projects/customer-support-automation.webp",
     "imageAlt": "Multi-Agent Customer Support repository preview",
-    "imageSource": "github",
-    "content": "### The challenge\n\nA single support inbox mixes sales questions, billing issues, and requests such as refunds. Each needs a different answer, and some need explicit approval.\n\n### How it works\n\nLangGraph classifies the request and routes it to a specialist. The specialist retrieves supporting material from the knowledge base, while SQLite keeps the conversation history and a supervisor reviews responses.\n\n- Route sales, technical support, billing, and account requests.\n- Retrieve knowledge-base passages with TF-IDF search.\n- Pause for approval on refunds, cancellations, or escalations."
+    "imageSource": "github"
   },
   {
     "id": "product-recommender",
@@ -125,16 +114,14 @@ export const projectsConfig: Project[] = [
       "Groq",
       "Vercel"
     ],
-    "year": 2026,
     "order": 5,
     "featured": true,
     "status": "shipped",
     "enabled": true,
-    "category": "AI",
+    "category": "Applied AI",
     "image": "/images/projects/product-recommender.webp",
     "imageAlt": "AI Product Recommender repository preview",
-    "imageSource": "github",
-    "content": "### The challenge\n\nA shopper may describe a budget and a preference in one sentence. This demo explores how to turn that input into a shortlist with clear reasoning.\n\n### How it works\n\nA React interface sends preferences to a serverless endpoint. The endpoint validates the model’s recommendations against real catalog IDs. A labeled local fallback handles basic price, brand, and category matching when the model is unavailable.\n\n- Accept plain-language queries alongside sample searches.\n- Show the reasoning behind ranked recommendations.\n- Keep the product finder usable when the API is unavailable."
+    "imageSource": "github"
   },
   {
     "id": "smart-resume-screener",
@@ -150,16 +137,14 @@ export const projectsConfig: Project[] = [
       "Prisma",
       "PostgreSQL"
     ],
-    "year": 2026,
     "order": 6,
     "featured": true,
     "status": "shipped",
     "enabled": true,
-    "category": "AI",
+    "category": "Applied AI",
     "image": "/images/projects/smart-resume-screener.webp",
     "imageAlt": "Smart Résumé Screener repository preview",
-    "imageSource": "github",
-    "content": "### The challenge\n\nReviewing a batch of résumés is time-consuming, and a raw match score gives reviewers little context for evaluating a shortlist.\n\n### How it works\n\nThe app extracts PDF text, combines constrained model output with rule-based checks, and streams progress to a Next.js dashboard. The scoring rules are designed to credit skills that appear explicitly in the résumé.\n\n- Screen a batch against a defined requisition.\n- Break down scores by skills, experience, résumé quality, and fit.\n- Inspect the ranked list and individual candidate details."
+    "imageSource": "github"
   },
   {
     "id": "stonksy",
@@ -170,11 +155,10 @@ export const projectsConfig: Project[] = [
     "tags": [
       "JavaScript"
     ],
-    "year": 2025,
     "order": 7,
     "enabled": true,
     "status": "shipped",
-    "category": "Full stack"
+    "category": "Full-stack"
   },
   {
     "id": "wanderlust",
@@ -188,11 +172,10 @@ export const projectsConfig: Project[] = [
       "MongoDB",
       "EJS"
     ],
-    "year": 2025,
     "order": 8,
     "enabled": true,
     "status": "shipped",
-    "category": "Full stack"
+    "category": "Full-stack"
   },
   {
     "id": "besafe",
@@ -203,10 +186,9 @@ export const projectsConfig: Project[] = [
     "tags": [
       "TypeScript"
     ],
-    "year": 2024,
     "order": 9,
     "enabled": true,
     "status": "shipped",
-    "category": "Full stack"
+    "category": "Full-stack"
   }
 ];

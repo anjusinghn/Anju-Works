@@ -88,7 +88,6 @@ export default async function ProjectPage({
     description: project.description,
     image: `${url}/opengraph-image`,
     keywords: project.tags.join(", "),
-    dateCreated: String(project.year),
     inLanguage: "en",
     ...(sameAs.length ? { sameAs } : {}),
     creator: { "@id": `${siteConfig.meta.url}/#person` },

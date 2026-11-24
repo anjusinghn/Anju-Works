@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ArrowUpRight,
   Contrast,
   BookmarkCheckIcon,
   FolderOpen,
@@ -34,7 +33,6 @@ import projectFavicons from "@/config/project-favicons.generated.json";
 import { projectsConfig } from "@/config/projects";
 import { siteConfig } from "@/config/site";
 import type { Project } from "@/config/types";
-import { writingConfig } from "@/config/writing";
 import { playCopySound } from "@/lib/copy-sound";
 import { cn } from "@/lib/utils";
 
@@ -75,7 +73,7 @@ function ProjectIcon({
 /**
  * The site-wide command palette, mounted once in the header. Every route is a
  * couple of keystrokes away — top-level pages, each showcase component, each
- * case study — plus theme controls and quick actions.
+ * project — plus theme controls and quick actions.
  */
 export function SiteCommandPalette({
   open,
@@ -111,16 +109,8 @@ export function SiteCommandPalette({
           tone={project.faviconTone}
         />
       ),
-      keywords: ["project", "case study", project.category, project.id],
+      keywords: ["project", project.category, project.id],
       onSelect: go(`/project/${project.id}`),
-    }));
-
-    const writingItems: CommandPaletteItem[] = writingConfig.map((entry) => ({
-      id: `writing-${entry.slug}`,
-      label: entry.title,
-      icon: <ArrowUpRight className="size-4" />,
-      keywords: ["writing", "post", "blog", entry.kind, entry.slug],
-      onSelect: go(entry.href),
     }));
 
     const navigationItems: (CommandPaletteItem & { enabled: boolean })[] = [
@@ -185,7 +175,6 @@ export function SiteCommandPalette({
         ? [{ label: "Components", items: componentItems }]
         : []),
       { label: "Projects", items: projectItems },
-      { label: "Writing", items: writingItems },
       {
         label: "Actions",
         items: [

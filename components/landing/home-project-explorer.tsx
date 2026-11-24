@@ -6,7 +6,7 @@ import { ArrowUpRight } from "@/components/shared/site-icons";
 import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
-function WorkYearSticker({ open, className }: { open: boolean; className?: string }) {
+function WorkFolderSticker({ open, className }: { open: boolean; className?: string }) {
   return (
     <PortfolioSticker
       name={open ? "work-open" : "work-closed"}
@@ -19,7 +19,7 @@ export function HomeProjectExplorer(props: ProjectExplorerProps) {
   return (
     <ProjectExplorer
       {...props}
-      yearIcon={WorkYearSticker}
+      folderIcon={WorkFolderSticker}
       linkIcon={<ArrowUpRight className="size-4" />}
       onProjectClick={(project, targetType, url) => {
         trackEvent("project_clicked", {
@@ -29,9 +29,9 @@ export function HomeProjectExplorer(props: ProjectExplorerProps) {
           url,
         });
       }}
-      onYearToggle={(year, action) => {
-        trackEvent("project_year_toggled", {
-          year,
+      onCategoryToggle={(category, action) => {
+        trackEvent("project_category_toggled", {
+          category,
           action,
         });
       }}

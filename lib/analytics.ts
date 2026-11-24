@@ -50,7 +50,7 @@ export type EventMap = {
   project_clicked: {
     project_id: string;
     project_title: string;
-    target_type: "case_study" | "external_url";
+    target_type: "project_page" | "external_url";
     url?: string;
   };
   project_live_preview_clicked: {
@@ -61,8 +61,8 @@ export type EventMap = {
     project_id: string;
     github_url: string;
   };
-  project_year_toggled: {
-    year: number;
+  project_category_toggled: {
+    category: string;
     action: "expand" | "collapse";
   };
   theme_toggled: {

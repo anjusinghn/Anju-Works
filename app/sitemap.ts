@@ -35,7 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       ]
     : [];
 
-  const writingEntries: MetadataRoute.Sitemap = writingConfig.filter((entry) => !entry.href.startsWith("/project/")).map((entry) => ({
+  const writingEntries: MetadataRoute.Sitemap = writingConfig.map((entry) => ({
     url: `${siteConfig.meta.url}${entry.href}`,
     ...(entry.date ? { lastModified: new Date(`${entry.date}T00:00:00Z`) } : {}),
     changeFrequency: "yearly" as const,
@@ -46,7 +46,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .filter((p) => p.enabled !== false)
     .map((p) => ({
       url: `${siteConfig.meta.url}/project/${p.id}`,
-      lastModified: new Date(`${p.year}-01-01T00:00:00Z`),
       changeFrequency: "monthly" as const,
       priority: 0.6,
     }));

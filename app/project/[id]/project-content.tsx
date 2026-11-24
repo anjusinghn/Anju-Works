@@ -1,6 +1,5 @@
 "use client";
 
-import { markdownComponents } from "@/lib/markdown/markdown-components";
 import { Button } from "@/components/ui/button";
 import { PaperFrame } from "@/components/shared/paper-frame";
 import { PortfolioSticker } from "@/components/shared/portfolio-sticker";
@@ -17,8 +16,6 @@ import {
 import { motion, useReducedMotion, type Variants } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -70,7 +67,7 @@ export function ProjectContent({
             {project.title}
           </h1>
           <p className="text-[15px] leading-6 text-muted-foreground">
-            {project.tagline}, {project.year}
+            {project.tagline}
           </p>
         </motion.header>
 
@@ -119,13 +116,6 @@ export function ProjectContent({
           <p className="text-[15px] leading-7 text-foreground text-pretty">
             {project.description}
           </p>
-          {project.content && (
-            <div className="prose mt-3 max-w-none text-[15px] leading-7 text-muted-foreground [&_p]:my-0">
-              <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-                {project.content}
-              </ReactMarkdown>
-            </div>
-          )}
           {project.tags.length > 0 && (
             <p className="mt-3 font-mono text-[11px] leading-5 tracking-wide text-muted-foreground">
               {project.tags.join(" · ")}
@@ -134,26 +124,10 @@ export function ProjectContent({
         </motion.div>
 
         <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-2 pt-5">
-          {project.caseStudyHref && (
-            <Button
-              asChild
-              className={`${pillClass} bg-foreground text-background hover:bg-foreground/85 [a]:hover:bg-foreground/85`}
-            >
-              <Link href={project.caseStudyHref}>
-                {projectsSectionConfig.caseStudyButtonLabel}
-                <ArrowDoodle className="size-4" />
-              </Link>
-            </Button>
-          )}
           {project.liveUrl && (
             <Button
               asChild
-              variant={project.caseStudyHref ? "secondary" : "default"}
-              className={
-                project.caseStudyHref
-                  ? pillClass
-                  : `${pillClass} bg-foreground text-background hover:bg-foreground/85 [a]:hover:bg-foreground/85`
-              }
+              className={`${pillClass} bg-foreground text-background hover:bg-foreground/85 [a]:hover:bg-foreground/85`}
             >
               <Link
                 href={project.liveUrl}

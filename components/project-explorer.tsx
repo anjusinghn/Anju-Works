@@ -1,6 +1,5 @@
 "use client";
 
-import { ArrowDoodle, handwriting } from "@/components/shared/doodles";
 import { cn } from "@/lib/utils";
 import {
   ArrowUpRight,
@@ -45,7 +44,6 @@ export interface ProjectExplorerItem {
   title: string;
   /** Secondary text beside the name. Falls back to the part of `title` after " — ". */
   subtitle?: string;
-  year: number;
   description?: string;
   category?: string;
   status?: ProjectStatus;
@@ -67,35 +65,31 @@ const defaultSampleProjects: ProjectExplorerItem[] = [
   {
     id: "zeno",
     title: "Zeno — AI Assistant for PostgreSQL",
-    year: 2025,
     status: "building",
-    category: "ai-tool",
+    category: "AI tools",
     href: "https://zeno.example.com",
     image: "/zeno.png",
   },
   {
     id: "gridly",
     title: "Gridly — Modern UI Component Library",
-    year: 2025,
     status: "new",
-    category: "design-system",
+    category: "Design systems",
     href: "https://gridly.example.com",
   },
   {
     id: "rixel",
     title: "Rixel — High Performance Pixel Canvas",
-    year: 2024,
     status: "shipped",
-    category: "webgl",
+    category: "Graphics",
     href: "https://rixel.example.com",
     image: "/rixel.png",
   },
   {
     id: "aura",
     title: "Aura — Ambient Audio Workspace",
-    year: 2024,
     status: "shipped",
-    category: "audio",
+    category: "Audio",
     href: "https://aura.example.com",
   },
 ];
@@ -239,7 +233,7 @@ interface PreviewHandlers {
   onPreviewStart: (project: ProjectExplorerItem, anchor?: DOMRect) => void;
   onPreviewEnd: () => void;
   showHoverPreview: boolean;
-  onProjectClick?: (project: ProjectExplorerItem, targetType: "case_study" | "external_url", url: string) => void;
+  onProjectClick?: (project: ProjectExplorerItem, targetType: "project_page" | "external_url", url: string) => void;
   linkIcon?: ReactNode;
 }
 
@@ -262,10 +256,8 @@ function WorkRow({
           project.href.startsWith("https://"))),
   );
 
-  const isCaseStudy = Boolean(project.href?.startsWith("/"));
-
   const handleClick = () => {
-    onProjectClick?.(project, isExternal ? "external_url" : "case_study", href);
+    onProjectClick?.(project, isExternal ? "external_url" : "project_page", href);
   };
 
   return (
@@ -307,17 +299,6 @@ function WorkRow({
           )}
         </span>
 
-        {isCaseStudy && (
-          <span
-            className={cn(
-              handwriting.className,
-              "inline-flex shrink-0 -rotate-3 items-center gap-0.5 text-[17px] leading-none text-primary motion-reduce:rotate-0",
-            )}
-          >
-            Case study
-            <ArrowDoodle className="size-3.5" />
-          </span>
-        )}
         {project.status ? <StatusBadge status={project.status} /> : null}
 
         <span
@@ -339,29 +320,29 @@ export type ProjectExplorerProps = {
   /** Hide the section label when the explorer lives inside an already-labelled surface.
    *  Also drops the section's top rule. */
   showHeading?: boolean;
-  /** Choose whether every year or only the most recent year starts expanded. */
-  defaultOpen?: "all" | "latest";
+  /** Choose whether every category or only the first category starts expanded. */
+  defaultOpen?: "all" | "first";
   /** Enable or disable the floating cursor hover image preview card. Default: true */
   showHoverPreview?: boolean;
   /** Show a toolbar with a category filter dropdown and an open/close-all toggle. */
   filterable?: boolean;
-  /** Cap each open year at this many rows. Longer years scroll inside their folder. */
+  /** Cap each open category at this many rows. Longer groups scroll inside their folder. */
   maxVisibleRows?: number;
   /** Optional callback fired when a project link is clicked. */
-  onProjectClick?: (project: ProjectExplorerItem, targetType: "case_study" | "external_url", url: string) => void;
-  /** Optional callback fired when a year folder is expanded or collapsed. */
-  onYearToggle?: (year: number, action: "expand" | "collapse") => void;
+  onProjectClick?: (project: ProjectExplorerItem, targetType: "project_page" | "external_url", url: string) => void;
+  /** Optional callback fired when a category folder is expanded or collapsed. */
+  onCategoryToggle?: (category: string, action: "expand" | "collapse") => void;
   /** Replace the arrow shown at the end of each row. Default: lucide `ArrowUpRight`. */
   linkIcon?: ReactNode;
-  /** Artwork for the year toggle, with the current expanded state. */
-  yearIcon?: ComponentType<{ open: boolean; className?: string }>;
+  /** Artwork for the category toggle, with the current expanded state. */
+  folderIcon?: ComponentType<{ open: boolean; className?: string }>;
   /** Optional DOM id for the section container */
   id?: string;
   /** Additional classes for the container section */
   className?: string;
 };
 
-type YearGroup = { year: number; projects: ProjectExplorerItem[] };
+type CategoryGroup = { category: string; projects: ProjectExplorerItem[] };
 
 const ALL_FILTER = "all";
 const PINNED_FILTER = "pinned";
@@ -369,20 +350,18 @@ const PINNED_FILTER = "pinned";
 const ROW_HEIGHT = 44;
 const PEEK_COUNT = 3;
 
-function groupByYear(projects: ProjectExplorerItem[]): YearGroup[] {
-  return projects
-    .filter((item) => item.enabled !== false)
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-    .reduce<YearGroup[]>((groups, project) => {
-      const group = groups.find((g) => g.year === project.year);
-      if (group) {
-        group.projects.push(project);
-      } else {
-        groups.push({ year: project.year, projects: [project] });
-      }
-      return groups;
-    }, [])
-    .sort((a, b) => b.year - a.year);
+function groupByCategory(projects: ProjectExplorerItem[]): CategoryGroup[] {
+  const groups = new Map<string, ProjectExplorerItem[]>();
+  const sorted = [...projects].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+  for (const project of sorted) {
+    const category = project.category ?? "Other";
+    const group = groups.get(category);
+    if (group) group.push(project);
+    else groups.set(category, [project]);
+  }
+
+  return [...groups].map(([category, projects]) => ({ category, projects }));
 }
 
 function matchesFilter(project: ProjectExplorerItem, filter: string) {
@@ -391,23 +370,23 @@ function matchesFilter(project: ProjectExplorerItem, filter: string) {
   return project.category === filter;
 }
 
-function initialOpenYears(groups: YearGroup[], mode: "all" | "latest") {
+function initialOpenCategories(groups: CategoryGroup[], mode: "all" | "first") {
   return Object.fromEntries(
-    groups.map((group, index) => [group.year, mode === "all" || index === 0]),
-  ) as Record<number, boolean>;
+    groups.map((group, index) => [group.category, mode === "all" || index === 0]),
+  ) as Record<string, boolean>;
 }
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
 
 function FolderRows({
-  year,
+  category,
   count,
   maxVisibleRows,
   onScroll,
   onClose,
   children,
 }: {
-  year: number;
+  category: string;
   count: number;
   maxVisibleRows?: number;
   onScroll: () => void;
@@ -466,7 +445,7 @@ function FolderRows({
               onClick={onClose}
               className="inline-flex min-h-6 cursor-pointer items-center gap-1 transition-colors hover:text-foreground"
             >
-              Close {year}
+              Close {category}
               <ChevronUp aria-hidden="true" className="size-3" />
             </button>
           </span>
@@ -486,14 +465,14 @@ export function ProjectExplorer({
   maxVisibleRows,
   id,
   onProjectClick,
-  onYearToggle,
+  onCategoryToggle,
   linkIcon,
-  yearIcon: YearIcon = PaperFolderIcon,
+  folderIcon: FolderIcon = PaperFolderIcon,
   className,
 }: ProjectExplorerProps) {
   const [activeProject, setActiveProject] = useState<ProjectExplorerItem | null>(null);
   const [filter, setFilter] = useState(ALL_FILTER);
-  const headerRefs = useRef(new Map<number, HTMLButtonElement>());
+  const headerRefs = useRef(new Map<string, HTMLButtonElement>());
   const panelIdBase = useId();
 
   const enabledProjects = useMemo(
@@ -515,49 +494,49 @@ export function ProjectExplorer({
 
   const pinnedCount = enabledProjects.filter((project) => project.featured).length;
 
-  const projectsByYear = useMemo(
-    () => groupByYear(enabledProjects.filter((project) => matchesFilter(project, filter))),
+  const projectsByCategory = useMemo(
+    () => groupByCategory(enabledProjects.filter((project) => matchesFilter(project, filter))),
     [enabledProjects, filter],
   );
 
-  const [openYears, setOpenYears] = useState<Record<number, boolean>>(() =>
-    initialOpenYears(groupByYear(enabledProjects), defaultOpen),
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(() =>
+    initialOpenCategories(groupByCategory(enabledProjects), defaultOpen),
   );
 
-  const visibleCount = projectsByYear.reduce((sum, group) => sum + group.projects.length, 0);
-  const allOpen = projectsByYear.every((group) => openYears[group.year]);
+  const visibleCount = projectsByCategory.reduce((sum, group) => sum + group.projects.length, 0);
+  const allOpen = projectsByCategory.every((group) => openCategories[group.category]);
 
   const applyFilter = useCallback(
     (next: string) => {
       setFilter(next);
-      const groups = groupByYear(enabledProjects.filter((project) => matchesFilter(project, next)));
-      setOpenYears(
+      const groups = groupByCategory(enabledProjects.filter((project) => matchesFilter(project, next)));
+      setOpenCategories(
         next === ALL_FILTER
-          ? initialOpenYears(groups, defaultOpen)
-          : initialOpenYears(groups, "all"),
+          ? initialOpenCategories(groups, defaultOpen)
+          : initialOpenCategories(groups, "all"),
       );
     },
     [enabledProjects, defaultOpen],
   );
 
-  const setYearOpen = useCallback(
-    (year: number, open: boolean) => {
-      onYearToggle?.(year, open ? "expand" : "collapse");
-      setOpenYears((prev) => ({ ...prev, [year]: open }));
+  const setCategoryOpen = useCallback(
+    (category: string, open: boolean) => {
+      onCategoryToggle?.(category, open ? "expand" : "collapse");
+      setOpenCategories((prev) => ({ ...prev, [category]: open }));
     },
-    [onYearToggle],
+    [onCategoryToggle],
   );
 
-  const closeYear = useCallback(
-    (year: number) => {
-      setYearOpen(year, false);
-      const header = headerRefs.current.get(year);
+  const closeCategory = useCallback(
+    (category: string) => {
+      setCategoryOpen(category, false);
+      const header = headerRefs.current.get(category);
       if (header && header.getBoundingClientRect().top < 0) {
         header.scrollIntoView({ block: "start", behavior: "smooth" });
       }
       header?.focus({ preventScroll: true });
     },
-    [setYearOpen],
+    [setCategoryOpen],
   );
 
   const filterLabel =
@@ -643,14 +622,14 @@ export function ProjectExplorer({
       {filterable && (
         <div className="flex flex-wrap items-center justify-between gap-2 px-4 pb-3 sm:px-6">
           <p className="font-mono text-[10px] tracking-wider text-muted-foreground">
-            {plural(visibleCount, "project")} · {plural(projectsByYear.length, "year")}
+            {plural(visibleCount, "project")} · {projectsByCategory.length} {projectsByCategory.length === 1 ? "category" : "categories"}
           </p>
           <div className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={() =>
-                setOpenYears(
-                  Object.fromEntries(projectsByYear.map((group) => [group.year, !allOpen])),
+                setOpenCategories(
+                  Object.fromEntries(projectsByCategory.map((group) => [group.category, !allOpen])),
                 )
               }
               className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-full px-3 text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground/30"
@@ -707,21 +686,21 @@ export function ProjectExplorer({
         onMouseMove={handleMouseMove}
         onMouseLeave={handlePreviewEnd}
       >
-        {projectsByYear.map((group) => {
-          const isOpen = openYears[group.year] ?? false;
-          const panelId = `${panelIdBase}-${group.year}`;
+        {projectsByCategory.map((group) => {
+          const isOpen = openCategories[group.category] ?? false;
+          const panelId = `${panelIdBase}-${encodeURIComponent(group.category)}`;
           const peek = group.projects.slice(0, PEEK_COUNT).map((project) => project.title.split(" — ")[0]);
           const more = group.projects.length - peek.length;
 
           return (
-            <div key={group.year}>
+            <div key={group.category}>
               <button
                 ref={(node) => {
-                  if (node) headerRefs.current.set(group.year, node);
-                  else headerRefs.current.delete(group.year);
+                  if (node) headerRefs.current.set(group.category, node);
+                  else headerRefs.current.delete(group.category);
                 }}
                 type="button"
-                onClick={() => setYearOpen(group.year, !isOpen)}
+                onClick={() => setCategoryOpen(group.category, !isOpen)}
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 className={cn(
@@ -729,7 +708,7 @@ export function ProjectExplorer({
                   !isOpen && "ring-1 ring-inset ring-transparent hover:ring-border/60",
                 )}
               >
-                <YearIcon
+                <FolderIcon
                   open={isOpen}
                   className="-rotate-6 transition-transform duration-200 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:-rotate-12 motion-safe:group-focus-visible:-translate-y-0.5 motion-safe:group-focus-visible:-rotate-12 motion-reduce:rotate-0 motion-reduce:transition-none"
                 />
@@ -744,7 +723,7 @@ export function ProjectExplorer({
                     className="absolute inset-0 -z-10 opacity-[0.08]"
                     style={{ ...PAPER_TEXTURE, clipPath: PAPER_EDGE }}
                   />
-                  {group.year}
+                  {group.category}
                 </span>
                 <span className="ml-1.5 shrink-0 font-mono text-[10px] tracking-wider text-muted-foreground">
                   {plural(group.projects.length, "project")}
@@ -779,11 +758,11 @@ export function ProjectExplorer({
                   >
                     <FolderRows
                       key={filter}
-                      year={group.year}
+                      category={group.category}
                       count={group.projects.length}
                       maxVisibleRows={maxVisibleRows}
                       onScroll={handlePreviewEnd}
-                      onClose={() => closeYear(group.year)}
+                      onClose={() => closeCategory(group.category)}
                     >
                       {group.projects.map((project) => (
                         <WorkRow
@@ -803,7 +782,7 @@ export function ProjectExplorer({
             </div>
           );
         })}
-        {projectsByYear.length === 0 && (
+        {projectsByCategory.length === 0 && (
           <p className="px-1 py-6 text-center text-sm text-muted-foreground">
             Nothing here yet.
           </p>
@@ -867,7 +846,7 @@ export function ProjectExplorer({
                   {activeProject.title}
                 </div>
                 <span className="shrink-0 pt-1 font-mono text-[10px] text-muted-foreground">
-                  {activeProject.imageSource === "github" ? "GitHub" : activeProject.year}
+                  {activeProject.imageSource === "github" ? "GitHub" : activeProject.category}
                 </span>
               </div>
             </div>

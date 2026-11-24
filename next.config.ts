@@ -48,6 +48,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      { source: "/case-study/smart-resume-screener", destination: "/project/smart-resume-screener", permanent: true },
       { source: "/projects/:id", destination: "/project/:id", permanent: true },
       { source: "/sitemap-index.xml", destination: "/sitemap.xml", permanent: true },
       { source: "/sitemap-0.xml", destination: "/sitemap.xml", permanent: true },

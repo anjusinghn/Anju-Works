@@ -143,8 +143,6 @@ export const siteConfig: PortfolioConfig = {
   },
   sectionOrder: [
     "projects",
-    "accelute",
-    "writing",
     "opensource",
     "socials",
     "skills",
@@ -170,16 +168,12 @@ export const siteConfig: PortfolioConfig = {
     github: true,
     contact: false,
     opensource: true,
-    writing: true,
-    accelute: true,
   },
   sectionLabels: {
-    accelute: "Best work",
     github: "GitHub",
     opensource: "Open source",
     projects: "Work",
     skills: "Stack",
-    writing: "Case studies",
   },
   banner: {
     imageSrc: "/images/profile-banner-cutout.webp",
