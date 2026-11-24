@@ -1,25 +1,24 @@
 ---
-import removeTrailingSlash from "@/utils/removeTrailingSlash";
-import presentation from "@/data/presentation";
-
-const pathname = removeTrailingSlash(Astro.url.pathname);
+import { profile } from "@/data/profile";
 ---
 
-<header class="z-40 flex w-full flex-col gap-2 md:flex-row md:justify-between">
-  <div class='text-cyan-400 font-lexend text-xl non-italic font-bold'>Kaizen.</div>
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="/">
+      <span class="monogram" aria-hidden="true">AS</span>
+      <span>{profile.name}</span>
+    </a>
 
-  <nav role="navigation">
-    <ul role="list" class="flex flex-row gap-2">
-      <li></li>
-        <a
-          href="/"
-          class:list={{
-            ["hover:text-neutral-100"]: true,
-            ["text-neutral-100"]: pathname === "/",
-          }}>Home</a
-        >
-      </li>
-      <li></li>
-    </ul>
-  </nav>
+    <nav aria-label="Main navigation">
+      <ul class="navigation">
+        <li><a href="/#projects">Projects</a></li>
+        <li><a href="/#experience">Experience</a></li>
+        <li><a href="/#about">About</a></li>
+      </ul>
+    </nav>
+
+    <a class="resume-link text-link" href={profile.resume} download aria-label="Download résumé PDF">
+      Résumé <span aria-hidden="true">↓</span>
+    </a>
+  </div>
 </header>

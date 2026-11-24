@@ -1,29 +1,12 @@
--this is how you write blog 
----
-title: "Untitled"
-publishedAt: 2023-05-24
-description: "Lorem ipsum dolor sit amet consectetur et ultrices blandit neque ege"
-slug: "untitled"
-isPublish: true
----
+# Anju Works
 
-## Hello World
+Anju Singh’s portfolio at [anjusingh.space](https://anjusingh.space), built with Astro and hosted on Vercel.
 
+```sh
+npm ci
+npm run dev
+npm run check
+npm run build
+```
 
-Vos illo in habet, ipse est suo fuit, solidissima invecta moverent [si] pericula
-ea pelle te quatiens proditus. Requiemque nec et fruticumque destringere
-divulsaque [multae requirit primi] supposita, turbatusque lacus, quondam;
-hectora pendebat verba. Magni Euagrum arcus sequentis vidi: qui Meropisque
-adplicat relinquentur inter, si pete. Magna constitit ore rediit et parentis
-pomaria lumina seque aura.
-
-[multae requirit primi]: http://heu.io/
-[si]: http://infelixlucina.net/mutati
-
-this is how you link
-
-add > for a left bar 
-
-add ' around the text for a code space look
-
-https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
+Update the experience, skills, and contact links in `src/data/profile.ts` and the project entries in `src/data/projects.ts`. The public résumé lives at `public/anju-singh-resume.pdf`.

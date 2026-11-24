@@ -1,48 +1,31 @@
 ---
-import Header from "../components/Header.astro";
-import BlurCircle from "@/components/shared/BlurCircle.astro";
-import theme from "@/data/theme";
+import "@fontsource-variable/dm-sans";
+import "@fontsource/instrument-serif/latin-400.css";
+import "@/styles/portfolio.css";
+
+import Header from "@/components/Header.astro";
 import SEOTags from "@/components/seo/SEOTags.astro";
+import { profile } from "@/data/profile";
 
-import "@fontsource/open-sans";
-import "@/styles/tailwind.css";
-import "@/styles/post.css";
-
-
-
-export interface Props {
+interface Props {
   title?: string;
   description?: string;
-  og?: {
-    title?: string;
-    type?: string;
-    description?: string;
-    image?: string;
-    alt?: string;
-  };
-  article?: {
-    publishedTime?: string;
-  };
+  noindex?: boolean;
 }
 
-const { title, description, og, article } = Astro.props;
+const {
+  title = profile.name + " | AI & Software Engineering",
+  description = profile.description,
+  noindex,
+} = Astro.props;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <SEOTags title={title} description={description} og={og} article={article} />
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Lexend&family=Ubuntu+Mono:wght@700&display=swap');
-    </style> 
-    
-  <body
-    class=" effect mx-auto flex  max-w-[872px] flex-col gap-9 px-10 py-8 text-sm text-neutral-400 md:gap-20 md:py-16"
-  >
-  
-  
+  <SEOTags {title} {description} {noindex} />
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <Header />
-    
     <slot />
-    
   </body>
 </html>

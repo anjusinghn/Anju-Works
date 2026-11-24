@@ -1,94 +1,35 @@
 ---
-import { SEO } from "astro-seo";
-import presentation from "@/data/presentation";
+import { profile } from "@/data/profile";
 
-
-type Props = {
-  title?: string;
-  description?: string;
+interface Props {
+  title: string;
+  description: string;
   noindex?: boolean;
-  og?: {
-    title?: string;
-    type?: string;
-    description?: string;
-    image?: string;
-    alt?: string;
-  };
-  article?: {
-    publishedTime?: string;
-  };
-};
+}
 
-const { title, description, noindex, og, article } = Astro.props;
-
-const SITE_NAME = "Kaizen";
-const DEFAULT_TITLE_PAGE = "Kaizen";
-const DEFAULT_DESCRIPTION_PAGE = presentation.description;
-const DEFAULT_IMAGE = "/og.png";
-const DEFAULT_IMAGE_ALT = `Hi, I'm Rishi, aka kaizen. ${presentation.description}`;
-
-const pageTitle = title || DEFAULT_TITLE_PAGE;
-const pageDescription = description || DEFAULT_DESCRIPTION_PAGE;
-const canonical = new URL(Astro.url.pathname, Astro.site).href;
-
-const openGraph = {
-  title: og?.title || pageTitle,
-  type: og?.type || "website",
-  image: new URL(og?.image || DEFAULT_IMAGE, Astro.site).href,
-  alt: og?.alt || DEFAULT_IMAGE_ALT,
-  description: og?.description || pageDescription,
-};
-const hasDefaultImage = !og?.image;
+const { title, description, noindex } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const socialImage = new URL("/og.png", Astro.site);
 ---
 
 <head>
-  <SEO
-    charset="UTF-8"
-    title={pageTitle}
-    description={pageDescription}
-    canonical={canonical}
-    noindex={noindex || false}
-    openGraph={{
-      basic: {
-        title: openGraph.title,
-        type: openGraph.type,
-        image: openGraph.image,
-        url: canonical,
-      },
-      optional: {
-        description: openGraph.description,
-        siteName: SITE_NAME,
-        locale: "en_US",
-      },
-      image: {
-        type: hasDefaultImage ? "image/png" : undefined,
-        width: hasDefaultImage ? 1200 : undefined,
-        height: hasDefaultImage ? 630 : null,
-        alt: openGraph.alt,
-      },
-      article: article && {
-        publishedTime: article.publishedTime,
-        authors: ["Rishi Vhavle"],
-      },
-    }}
-    twitter={{
-      card: "summary_large_image",
-      title: openGraph.title,
-      description: openGraph.description,
-      image: openGraph.image,
-      imageAlt: openGraph.alt,
-    }}
-    extend={{
-      link: [
-        { rel: "icon", href: "/favicon.svg" },
-        { rel: "sitemap", href: "/sitemap-index.xml" },
-      ],
-      meta: [
-        { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "generator", content: Astro.generator },
-        { name: "author", content: "Rishi Vhavle" },
-        { name: "theme-color", content: "#000000" },
-      ],
-    }}
-  />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f5ec" />
+  <meta name="description" content={description} />
+  <meta name="author" content={profile.name} />
+  {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+  <title>{title}</title>
+  <meta property="og:site_name" content={profile.name} />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={socialImage} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Anju Singh’s portfolio with her portrait" />
+  <meta name="twitter:card" content="summary_large_image" />
 </head>
