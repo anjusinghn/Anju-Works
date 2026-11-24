@@ -1,0 +1,41 @@
+---
+import { profile } from "@/data/profile";
+import calendar from "@/data/contributions.json";
+
+const dateFormat = new Intl.DateTimeFormat("en-GB", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+const first = dateFormat.format(new Date(calendar.first));
+const last = dateFormat.format(new Date(calendar.last));
+const count = calendar.total.toLocaleString("en-IN");
+---
+
+<section id="github" class="section" aria-labelledby="github-heading">
+  <div class="section-heading">
+    <h2 id="github-heading">GitHub activity</h2>
+    <a class="text-link" href={profile.github}>View profile <span aria-hidden="true">↗</span></a>
+  </div>
+  <figure class="activity-card">
+    <figcaption>
+      <strong>{count} contributions</strong>
+      <span>{first} – {last}</span>
+    </figcaption>
+    <div class="activity-scroll" tabindex="0" role="group" aria-label="Contribution calendar, scroll horizontally to view all weeks">
+      <div class="activity-plot" aria-hidden="true" style={`--weeks:${calendar.weeks.length}`}>
+        <div class="activity-months">
+          {calendar.months.map(({ label, column }) => <span style={`grid-column:${column}`}>{label}</span>)}
+        </div>
+        <div class="activity-weeks">
+          {calendar.weeks.map((week) => (
+            <div class="activity-week">
+              {week.map((level) => <span data-level={level ?? "blank"}></span>)}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div class="activity-legend" aria-hidden="true">
+      Less
+      {[0, 1, 2, 3, 4].map((level) => <span data-level={level}></span>)}
+      More
+    </div>
+  </figure>
+</section>

@@ -1,36 +1,28 @@
 ---
 import type { Project } from "@/data/projects";
 
-type Props = {
-  project: Project;
-  featured: boolean;
-};
+interface Props { project: Project }
 
-const { project, featured } = Astro.props;
+const { project } = Astro.props;
 ---
 
-<article class:list={["project-card", { "project-featured": featured }]}>
-  <p class="eyebrow project-category">{project.category}</p>
-  <h3>{project.title}</h3>
-  <p class="project-description">{project.description}</p>
-
-  <ul class="technologies" aria-label="Technologies" role="list">
-    {project.technologies.map((technology) => <li>{technology}</li>)}
-  </ul>
-
-  <ul class="project-links" role="list">
-    {
-      project.repositories.map(({ label, url }) => (
-        <li>
-          <a
-            class="text-link"
-            href={url}
-            aria-label={project.title + " on GitHub" + (label === "GitHub" ? "" : ", " + label)}
-          >
-            {label} <span aria-hidden="true">↗</span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
-</article>
+<li class="project-row" data-category={project.category}>
+  <details>
+    <summary>
+      <span class="row-mark" aria-hidden="true">{project.category === "Developer tools" ? "⌘" : "✳"}</span>
+      <span class="row-title">{project.title}</span>
+      <span class="row-category">{project.category}</span>
+      <span class="row-expand" aria-hidden="true"></span>
+    </summary>
+    <div class="project-details">
+      <p>{project.description}</p>
+      <ul class="tags" aria-label="Technologies" role="list">
+        {project.technologies.map((technology) => <li>{technology}</li>)}
+      </ul>
+      <div class="project-links">
+        <a class="text-link" href={`/projects/${project.id}/`}>Read case study <span aria-hidden="true">↗</span></a>
+        {project.liveUrl && <a class="text-link" href={project.liveUrl}>Live demo <span aria-hidden="true">↗</span></a>}
+      </div>
+    </div>
+  </details>
+</li>

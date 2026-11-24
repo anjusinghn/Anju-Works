@@ -3,8 +3,10 @@ import Layout from "@/layouts/Layout.astro";
 ---
 
 <Layout title="Page not found | Anju Singh" description="Return to Anju Singh’s portfolio." noindex>
-  <main id="main" class="shell section not-found">
-    <h1>Page not found</h1>
-    <a class="button button-primary" href="/">Return to portfolio <span aria-hidden="true">↗</span></a>
+  <main id="main" tabindex="-1" class="shell case-study">
+    <div class="section case-header">
+      <h1>Page not found</h1>
+      <a class="button primary" href="/"><span aria-hidden="true">←</span> Return to portfolio</a>
+    </div>
   </main>
 </Layout>

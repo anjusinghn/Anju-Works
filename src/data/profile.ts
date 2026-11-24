@@ -35,7 +35,7 @@ export const experience = [
 export const skills = [
   {
     area: "Languages",
-    technologies: "Python, Java, JavaScript, SQL, HTML, CSS",
+    technologies: "Python, Java, JavaScript, TypeScript, SQL, HTML, CSS",
   },
   {
     area: "Web & APIs",
@@ -61,12 +61,13 @@ export const skills = [
 
 export const certifications = [
   "IBM Agentic AI Professional",
-  "AWS Cloud Foundation",
+  "AWS Academy Cloud Foundations",
+  "AWS Academy Cloud Architecting",
   "Oracle AI Foundation",
 ];
 
 export const highlights = [
   "Solved 240+ data structures and algorithms problems on LeetCode using Java.",
-  "Organized the 2024 NASA Space Apps Challenge.",
+  "Helped organize and hosted the 2024 NASA Space Apps Challenge in Amaravati.",
   "Led the research department at NextGen Club and participated in 10+ hackathons.",
 ];
